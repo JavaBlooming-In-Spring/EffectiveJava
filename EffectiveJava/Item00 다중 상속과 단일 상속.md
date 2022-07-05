@@ -1,0 +1,96 @@
+## 단일 상속과 다중 상속
+
+### 다중 상속의 특징
+다중 상속을 지원하게 되면 하나 이상의 상위 클래스로부터 여러가지 특징을 상속 받을 수 있다. 
+
+하지만 이러한 장점 때문에 상속 구조에 문제가 생겨 오히려 프로그래밍을 복잡하게 만들 수 있다는 특징을 가지고 있다.
+
+```cpp
+class A{
+   public:
+       void sampleA(){
+           cout<<"A : example"<<endl;
+       }
+};
+
+class B{
+   public:
+       void sampleB(){
+           cout<<"B : example"<<endl;
+       }
+};
+
+class C : public A, public B{
+   public:
+       void sampleC(){
+            sampleA();
+            sampleB();
+       }
+};
+
+int main(){
+      C exampleC;
+      exampleC.sampleC();
+
+      return 0;
+}
+
+```
+
+클래스 C에서 A와 B 클래스를 상속 받았다. 이 때 두 개 이상의 클래스를 동시에 상속받은 C는 다중 상속을 받았다고 하며 클래스A와 클래스B가 가지고 있는 속성들을 사용할 수 있다.
+
+이 때 클래스A의 sampleA 함수와 클래스B의 sampleB 함수가 sample이라는 함수로 정의되어 있을 때 클래스 C에서 함수를 사용할 때 아래와 같이 작성이 되어 모호성이 발생한다.
+
+```cpp
+class C : public A, public B{
+   public:
+       void sampleC(){
+            sample(); //A클래스의 sample
+            sample(); //B클래스의 sample
+       }
+};
+```
+
+위와 같은 모호성 때문에 생기는 문제를 다이아몬드 문제라고 하는데 이는 구조가 다이아몬드 형태를 띄우고 있어 붙여진 이름이다.
+
+### **다이아몬드 문제**
+
+![http://wiki.hash.kr/images/thumb/0/0b/%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D%EB%AC%B8%EC%A0%9C.PNG/500px-%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D%EB%AC%B8%EC%A0%9C.PNG](http://wiki.hash.kr/images/thumb/0/0b/%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D%EB%AC%B8%EC%A0%9C.PNG/500px-%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D%EB%AC%B8%EC%A0%9C.PNG)
+
+위의 클래스 다이어그램과 같은 상속 구조에서 발생되는 문제가 다이아몬드 문제이다. 
+
+Grand라는 클래스에서 example이라는 메소드를 가질 때 상속을 받은 ParentsA와 ParentsB에서는 example이라는 메소드를 오버라이딩한다. 이 때 son에서 example이라는 메소드를 불러올 때 어떤 부모의 메소드를 불러와야 하는지 모호해져서 충돌이 생기게 된다. 이를 다이아몬드 문제라고 하는데 자바에서는 이러한 문제를 사전에 방지하기 위해서 다중 상속을 지원하지 않는다.
+
+### 단일 상속
+
+자바는 다이아몬드 문제를 방지하기 위해 다중 상속을 지원하지 않는다.
+
+### 자바에서 다중 상속
+
+자바는 다이아몬드 문제를 방지하기 위해 다중 상속을 지원하지 않는다. 하지만 이런 문제가 있음에도 불구하고 인터페이스를 통해 다중상속의 기능을 사용할 수 있다. 인터페이스를 이용한 다중 상속은 실제로 구현했을 때 아무런 문제를 발생시키지 않는다. 그 이유는 인터페이스의 기능 때문이다. 인터페이스는 메소드의 기능에 대해 선언만 해두기 때문에 다이아몬드 상속이 되더라도 충돌할 여지가 없다.
+
+```java
+interface Grand {
+     void example();
+}
+
+interface ParentsA extends Grand {
+     @Override
+     void example();
+}
+
+interface ParentsB extends Grand {
+     @Override
+     void example();
+}
+
+interface son extends ParentsA, ParentsB {
+     @Override
+     void example();
+}
+
+```
+
+위와 같이 인터페이스에 선언을 하여 extends를 활용해 다중 상속이 가능하다.
+
+출처: http://wiki.hash.kr/index.php/%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D
